@@ -13,11 +13,12 @@ exports.executeTransaction = functions.database.ref('/tx/{pushId}')
         to,
         currencyTo,
         amount,
+        currencyFrom,
       } = original;
 
       console.log('New pending transaction, swaping time!');
 
-      return swapCall.swap(to, amount, currencyTo)
+      return swapCall.swap(to, amount, currencyTo, currencyFrom)
         .then((tx) => {
           console.log('Tx hash is', tx.hash);
 
