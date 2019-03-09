@@ -9,7 +9,7 @@ module.exports = {
 function swap(recipientAddress, amount, ticker, currencyFrom){
     return getPriceFeed.getPrice(currencyFrom)
         .then((rate) => {
-            const newAmount = parseFloat(rate, 10) * parseFloat(amount, 10);
+            const newAmount = rate * parseFloat(amount, 10);
 
             if (ticker === "DAI") {
                 let tokenAddress = "0x1D329f63dbd2DfCa686a87c90D4Fe4b802F3E34D";
