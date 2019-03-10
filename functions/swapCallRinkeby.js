@@ -6,22 +6,21 @@ module.exports = {
     swap: swap
 }
 
-function swap(recipientAddress, amount, ticker, currencyFrom) {
-  let newAmount;
+function swap(recipientAddress, amount, ticker, currencyFrom){
+    return getPriceFeed.getPrice(currencyFrom)
+        .then((rate) => {
+            const newAmount = (parseFloat(amount, 10) / rate) * 0.99;
+            const newAmountString = newAmount.toString();
+            const snippedNewAmountString = newAmountString.substring(0, newAmountString.split('.')[0].length + 19);
+            
+            if (ticker === "DAI") {
+                let tokenAddress = "0x1D329f63dbd2DfCa686a87c90D4Fe4b802F3E34D";
+                return uniswapLogic.uniswapHotSwap(recipientAddress, snippedNewAmountString, tokenAddress);
+            }
+            else {
+                return ethDirectSend.sendEth(recipientAddress, snippedNewAmountString);
+            }
+        })
 
-  if (currencyFrom.toLowerCase() === 'eur') {
-    newAmount = 0.0082237 * amount;
-    console.log(newAmount);
-  } else if (currencyFrom.toLowerCase() === 'usd') {
-    newAmount = 0.0073292 * amount;
-    console.log(newAmount);
-  }
 
-  if (ticker === "DAI") {
-      let tokenAddress = "0x1D329f63dbd2DfCa686a87c90D4Fe4b802F3E34D";
-      return uniswapLogic.uniswapHotSwap(recipientAddress, newAmount.toString(), tokenAddress);
-  }
-  else {
-      return ethDirectSend.sendEth(recipientAddress, newAmount.toString());
-  }
 }
